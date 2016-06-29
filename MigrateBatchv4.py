@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 #connect to db
-conn = pymysql.connect(unix_socket="/Applications/MAMP/tmp/mysql/mysql.sock", port=3306, user='root', passwd='root', database='mdid')
+conn = pymysql.connect(unix_socket="PATH_TO_LOCAL_MYSQL/mysql.sock", port=3306, user='root', passwd='root', database='mdid')
 
 images=[]
 imagefiles=[]
@@ -18,8 +18,10 @@ start = datetime(2011, 01, 01)
 end = datetime.now()
 batchfolder = ""
 writer = ""
+
 def create_folder(s,e):
-	path='''/Volumes/Isaac/ImageMigration/v2/{0}_{1}'''
+	#create a folder to hold the new csv and all the images that will be copied
+	path='''PATH_TO_NEW_FOLDER/{0}_{1}'''
 	s=s.strftime('%Y-%m-%d')
 	e=e.strftime('%Y-%m-%d')
 	global batchfolder 
@@ -104,11 +106,12 @@ def write_rows(s,e):
 	f.close()
 
 def write_error(i):
-	with open('/Users/connerms/Documents/PDID/errors.txt', 'a') as error_file:
+	with open('PATH_TO_ERROR_FILE/errors.txt', 'a') as error_file:
 		error_file.write(str(i)+'\n')
 
 def copy_image_files(s,e):
 	print 'Processing %s images from %s to %s' % (len(images),s,e)
+	#this path is to a mounted share
 	fullpath = '/Volumes/MediaDB/www/oncampus/artidb/full'
 
 	bar = Bar('Processing', max=len(images))
@@ -118,7 +121,7 @@ def copy_image_files(s,e):
 		try: 
 			shutil.copyfile(src, dst)
 		except IOError:
-			with open('/Users/connerms/Documents/PDID/errors.txt', 'a') as error_file:
+			with open('PATH_TO_ERROR_FILE/errors.txt', 'a') as error_file:
 				error_file.write("Couldn't copy "+i+'\n')
 
 		bar.next()
